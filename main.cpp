@@ -96,6 +96,44 @@ void CholeskyDecomposition(Matrix A) {
 	cout << endl;
 }
 
+// QR разложение
+// A — квадратная невырожденная матрица
+// Q — унитарная матрица
+// R — верхнетреугольная матрица
+// A = Q*R
+void QRDecomposition(Matrix A) {
+	int n = A.size();
+
+	Matrix Q(n);
+	Matrix R(n);
+
+	for (int j = 0; j < n; j++) {
+		for (int i = 0; i < j; i++)
+			for (int k = 0; k < n; k++)
+				R(i, j) += A(k, j) * Q(k, i);
+
+		for (int i = 0; i < n; i++) {
+			Q(i, j) = A(i, j);
+
+			for (int k = 0; k < j; k++)
+				Q(i, j) -= R(k, j) * Q(i, k);
+
+			R(j, j) += Q(i, j) * Q(i, j);
+		}
+
+		R(j, j) = sqrt(R(j, j));
+
+		for (int i = 0; i < n; i++)
+			Q(i, j) /= R(j, j); // нормируем вектор
+	}
+
+	cout << "QR decomposition:" << endl;
+	cout << "Matrix Q:" << endl << Q << endl;
+	cout << "Matrix R:" << endl << R << endl;
+	cout << "Q * R:" << endl << (Q * R);
+	cout << endl;
+}
+
 int main() {
 	Matrix A = ReadMatrix(); // считываем матрицу
 
@@ -103,4 +141,5 @@ int main() {
 
 	LUDecomposition(A); // находим LU разложение
 	CholeskyDecomposition(A); // находим разложение Холецкого
+	QRDecomposition(A); // находим QR разложение
 }
