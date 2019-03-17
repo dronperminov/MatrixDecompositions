@@ -30,12 +30,7 @@ void LUDecomposition(Matrix A) {
 	Matrix U(n);
 
 	// выполняем LU разложение матрицы
-	for (int j = 0; j < n; j++) {
-		U(0, j) = A(0, j);
-		L(j, 0) = A(j, 0) / U(0, 0);
-	}
-
-	for (int i = 1; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
 			double sum = 0;
 
