@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #include "Matrix.h"
 
@@ -55,10 +56,51 @@ void LUDecomposition(Matrix A) {
 	cout << endl;
 }
 
+// Разложение Холецкого
+// A — симметричная положительно-определённая матрица
+// L — нижняя треугольная матрица со строго положительными элементами на диагонали
+// A = L*L^T
+void CholeskyDecomposition(Matrix A) {
+	int n = A.size();
+
+	Matrix L(n);
+
+	for (int i = 0; i < n; i++) {
+		double sum = A(i, i);
+
+		for (int k = 0; k < i; k++)
+			sum -= L(i, k) * L(i, k);
+
+		// корень из отрицательных чисел извлечь нельзя
+		if (sum < 0) {
+			cout << "Unable to find Cholesky decomposition" << endl;
+			return;
+		}
+
+		L(i, i) = sqrt(sum);
+
+		for (int j = i; j < n; j++) {
+			sum = 0;
+
+			for (int k = 0; k < i; k++)
+				sum += L(i, k) * L(j, k);
+
+			L(j, i) = (A(j, i) - sum) / L(i, i);
+		}
+	}
+
+	cout << "Cholesky decomposition:" << endl;
+	cout << "Matrix L:" << endl << L << endl;
+	cout << "Matrix L^T:" << endl << L.Transpose() << endl;
+	cout << "L * L^T:" << endl << (L * L.Transpose());
+	cout << endl;
+}
+
 int main() {
 	Matrix A = ReadMatrix(); // считываем матрицу
 
 	cout << endl << "Entered matrix: " << endl << A << endl; // выводим введённую матрицу
 
 	LUDecomposition(A); // находим LU разложение
+	CholeskyDecomposition(A); // находим разложение Холецкого
 }
