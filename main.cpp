@@ -62,26 +62,26 @@ void CholeskyDecomposition(Matrix A) {
 	Matrix L(n);
 
 	for (int i = 0; i < n; i++) {
-		double sum = A(i, i);
+		L(i, i) = A(i, i);
 
 		for (int k = 0; k < i; k++)
-			sum -= L(i, k) * L(i, k);
+			L(i, i) -= L(i, k) * L(i, k);
 
 		// корень из отрицательных чисел извлечь нельзя
-		if (sum < 0) {
+		if (L(i, i) < 0) {
 			cout << "Unable to find Cholesky decomposition" << endl;
 			return;
 		}
 
-		L(i, i) = sqrt(sum);
+		L(i, i) = sqrt(L(i, i));
 
-		for (int j = i; j < n; j++) {
-			sum = 0;
+		for (int j = i + 1; j < n; j++) {
+			L(j, i) = A(j, i);
 
 			for (int k = 0; k < i; k++)
-				sum += L(i, k) * L(j, k);
+				L(j, i) -= L(i, k) * L(j, k);
 
-			L(j, i) = (A(j, i) - sum) / L(i, i);
+			L(j, i) /= L(i, i);
 		}
 	}
 
