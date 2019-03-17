@@ -33,19 +33,15 @@ void LUDecomposition(Matrix A) {
 	// выполняем LU разложение матрицы
 	for (int i = 0; i < n; i++) {
 		for (int j = i; j < n; j++) {
-			double sum = 0;
+			U(i, j) = A(i, j);
+			L(j, i) = A(j, i);
 
-			for (int k = 0; k < i; k++)
-				sum += L(i, k) * U(k, j);
+			for (int k = 0; k < i; k++) {
+				U(i, j) -= L(i, k) * U(k, j);
+				L(j, i) -= L(j, k) * U(k, i);
+			}
 
-			U(i, j) = A(i, j) - sum;
-		
-			sum = 0;
-
-			for (int k = 0; k < i; k++)
-				sum += L(j, k) * U(k, i);
-
-			L(j, i) = (A(j, i) - sum) / U(i, i);
+			L(j, i) /= U(i, i);
 		}
 	}
 
