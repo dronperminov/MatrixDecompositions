@@ -199,6 +199,65 @@ void QRDecompositionGivens(Matrix A) {
 	cout << endl;
 }
 
+// QR разложение методом отражений (Хаусхолдера)
+// A — квадратная невырожденная матрица
+// Q — унитарная матрица
+// R — верхнетреугольная матрица
+// A = Q*R
+void QRDecompositionHouseholder(Matrix A) {
+	int n = A.size();
+
+	Matrix Q(n);
+	Matrix R(A);
+
+	for (int i = 0; i < n; i++)
+		Q(i, i) = 1;
+
+	for (int k = 0; k < n; k++) {
+		double *u = new double[n - k];
+		double norm = 0;
+
+		for (int i = k; i < n; i++) {
+			u[i - k] = R(i, k);
+			norm += R(i, k) * R(i, k);
+		}
+
+		double b = u[0] > 0 ? sqrt(norm) : -sqrt(norm);
+
+		u[0] += b;
+
+		Matrix H(n);
+
+		for (int i = 0; i < n; i++)
+			H(i, i) = 1;
+
+		for (int i = 0; i < n - k; i++)
+			for (int j = 0; j < n - k; j++)
+				H(i + k, j + k) -= u[i] * u[j] / (R(k, k) * b + norm);
+
+		R = H * R;
+		Q = Q * H;
+
+		delete[] u;
+	}
+
+	// для единственности QR разложения требуется положительность диагонали R
+	for (int i = 0; i < n; i++) {
+		if (R(i, i) < 0) {
+			for (int j = 0; j < n; j++) {
+				Q(j, i) = -Q(j, i);
+				R(i, j) = -R(i, j);
+			}
+		}
+	}
+
+	cout << "QR decomposition (Householder):" << endl;
+	cout << "Matrix Q:" << endl << Q << endl;
+	cout << "Matrix R:" << endl << R << endl;
+	cout << "Q * R:" << endl << (Q * R);
+	cout << endl;
+}
+
 // LDL разложение
 // A — симметричная положительно-определённая матрица
 // L — нижняя треугольная матрица с единицами на диагонали
@@ -244,5 +303,6 @@ int main() {
 	CholeskyDecomposition(A); // находим разложение Холецкого
 	QRDecomposition(A); // находим QR разложение
 	QRDecompositionGivens(A); // находим QR разложение методом вращений (Гивенса)
+	QRDecompositionHouseholder(A); // находим QR разложение методом отражений (Хаусхолдера)
 	LDLDecomposition(A); // находим LDL разложение
 }
