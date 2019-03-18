@@ -120,8 +120,11 @@ Matrix::~Matrix() {
 // вывод в поток
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
 	for (int i = 0; i < matrix.n; i++) {
-		for (int j = 0; j < matrix.n; j++)
-			os << std::setw(6) << matrix.values[i][j] << " ";
+		for (int j = 0; j < matrix.n; j++) {
+			os << std::setw(6); 
+			os << (fabs(matrix.values[i][j]) > 1e-15 ? matrix.values[i][j] : 0);
+			os << " ";
+		}
 
 		os << std::endl;
 	}

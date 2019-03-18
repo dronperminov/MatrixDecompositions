@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 // класс матрицы
 class Matrix {
