@@ -294,6 +294,38 @@ void LDLDecomposition(Matrix A) {
 	cout << endl;
 }
 
+// LR разложение
+// A — квадратная невырожденная матрица
+// L — единичная нижняя треугольная матрица
+// R — верхняя треугольная
+// A = L*R
+void LRDecomposition(Matrix A) {
+	int n = A.size();
+
+	Matrix L(n);
+	Matrix R(n);
+
+	for (int i = 0; i < n; i++) {
+		for (int j = i; j < n; j++) {
+			R(i, j) = A(i, j);
+			L(j, i) = A(j, i);
+
+			for (int k = 0; k < i; k++) {
+				R(i, j) -= L(i, k) * R(k, j);
+				L(j, i) -= L(j, k) * R(k, i);
+			}
+			
+			L(j, i) /= R(i, i);
+		}
+	}
+
+	cout << "LR decomposition:" << endl;
+	cout << "Matrix L:" << endl << L << endl;
+	cout << "Matrix R:" << endl << R << endl;
+	cout << "L * R:" << endl << (L * R);
+	cout << endl;
+}
+
 int main() {
 	Matrix A = ReadMatrix(); // считываем матрицу
 
@@ -305,4 +337,5 @@ int main() {
 	QRDecompositionGivens(A); // находим QR разложение методом вращений (Гивенса)
 	QRDecompositionHouseholder(A); // находим QR разложение методом отражений (Хаусхолдера)
 	LDLDecomposition(A); // находим LDL разложение
+	LRDecomposition(A); // находим LR разложение
 }
