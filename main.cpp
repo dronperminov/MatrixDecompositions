@@ -130,6 +130,42 @@ void QRDecomposition(Matrix A) {
 	cout << endl;
 }
 
+// LDL разложение
+// A — симметричная положительно-определённая матрица
+// L — нижняя треугольная матрица с единицами на диагонали
+// D — диагональная матрица
+// A = L*D*L^T
+void LDLDecomposition(Matrix A) {
+	int n = A.size();
+
+	Matrix L(n);
+	Matrix D(n);
+
+	for (int j = 0; j < n; j++) {
+		D(j, j) = A(j, j);
+		L(j, j) = 1;
+
+		for (int k = 0; k < j; k++)
+			D(j, j) -= L(j, k) * L(j, k) * D(k, k);
+
+		for (int i = j + 1; i < n; i++) {
+			L(i, j) = A(i, j);
+
+			for (int k = 0; k < j; k++)
+				L(i, j) -= L(i, k) * L(j, k) * D(k, k);
+
+			L(i, j) /= D(j, j);
+		}
+	}
+
+	cout << "LDL decomposition:" << endl;
+	cout << "Matrix L:" << endl << L << endl;
+	cout << "Matrix D:" << endl << D << endl;
+	cout << "Matrix L^T:" << endl << L.Transpose() << endl;
+	cout << "L * D * L^T:" << endl << (L * D * L.Transpose());
+	cout << endl;
+}
+
 int main() {
 	Matrix A = ReadMatrix(); // считываем матрицу
 
@@ -138,4 +174,5 @@ int main() {
 	LUDecomposition(A); // находим LU разложение
 	CholeskyDecomposition(A); // находим разложение Холецкого
 	QRDecomposition(A); // находим QR разложение
+	LDLDecomposition(A); // находим LDL разложение
 }
